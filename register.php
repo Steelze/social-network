@@ -4,7 +4,7 @@
     use app\DB;
 
     $db =DB::getInstance();
-    var_dump($db->select('users', [])->get());
+    $db->destroy('users', ['gender' => 'male']);
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -4,11 +4,11 @@
     define('DS', DIRECTORY_SEPARATOR);
     define('ROOT', __DIR__);
     //change to '/' for live
-    define('PROOT', '/sslcloud/');
+    define('PROOT', '/social-network/');
 
     $GLOBALS['config'] = [
         'mysql' => [
-            'host' => 'localhost', 
+            'host' => '127.0.0.1', 
             'username' => 'root',
             'password' => '',
             'db' => 'social',
