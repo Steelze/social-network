@@ -3,5 +3,8 @@
         "psr-4": {
             "app\\": "app"
         }
+    },
+    "require": {
+        "nesbot/carbon": "^2.7"
     }
 }

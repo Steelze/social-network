@@ -16,6 +16,10 @@
         'salt' => '$%fgrt@!h454*&t',
         'session' => 'user',
         'token' => 'token',
+        'trim-exception' => [
+            'password',
+            'password_confirmation',
+        ],
     ];
 
     function dd($var = null)
@@ -23,3 +27,7 @@
         var_dump($var);
         die();
     }
+
+    function sanitize($data ){
+	    return htmlentities(trim($data), ENT_QUOTES,"UTF-8" );
+	}

@@ -3,16 +3,17 @@ namespace app;
 
 use PDO;
 use app\Config;
-//Connect to parent Database
+use Carbon\Carbon;
+
 class DB
 {
-    // use QueryBuilder;
     private static $_instance = null;
-    private $_pdo, $_query, $_results, $_error = false, $_!empty = 0;
+    private $_pdo, $_query, $_results, $_error = false, $_count = 0;
     private function __construct()
     {
         try {
             $this->_pdo = new PDO('mysql:host='.Config::get('mysql.host').';dbname='.Config::get('mysql.db'), Config::get('mysql.username'), Config::get('mysql.password'));
+            $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -28,7 +29,6 @@ class DB
 
     private function query($sql, $params = [])
     {
-        // dd($sql);
         $this->_error = false;
         if ($this->_query = $this->_pdo->prepare($sql)) {
             if (!empty($params)) {
@@ -40,7 +40,7 @@ class DB
             }
             if ($this->_query->execute()) {
                 $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
-                $this->_!empty = $this->_query->row!empty();
+                $this->_count = $this->_query->rowCount();
             } else {
                 $this->_error = true;
             }
@@ -58,15 +58,15 @@ class DB
         return $this->_results;
     }
 
-    public function destroy($table, $params = [])
+    public function delete($table, $params = [])
     {
         if (empty($params)) {
             return false;
         }
-        return $this->update($table, ['deleted_at' => NOW()], $params);
+        return $this->update($table, ['deleted_at' => Carbon::now()], $params);
     }
 
-    public function delete($table, $params = [])
+    public function destroy($table, $params = [])
     {
         $values = [];
         $holder = null;
@@ -87,9 +87,10 @@ class DB
 
     public function insert($table, $fields = [])
     {
-        $sql = 'Select';
+        $fields['created_at'] = Carbon::now();
+        $fields['updated_at'] = Carbon::now();
         $keys = '`'.implode('`, `', array_keys($fields)).'`';
-        $values = rtrim(str_repeat('?, ', !empty($fields)), ', ');
+        $values = rtrim(str_repeat('?, ', count($fields)), ', ');
         $sql = "INSERT INTO `{$table}` ($keys) VALUES ($values) ";
         if (!$this->query($sql, array_values($fields))) {
             return true;
@@ -119,6 +120,7 @@ class DB
     {
         $holder = null;
         $keys = null;
+        $columns['updated_at'] = Carbon::now();
         if (empty($columns)) {
             return false;
         }
