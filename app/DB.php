@@ -39,7 +39,10 @@ class DB
                 }
             }
             if ($this->_query->execute()) {
-                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                try {
+                    $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                } catch (\Throwable $th) {
+                }
                 $this->_count = $this->_query->rowCount();
             } else {
                 $this->_error = true;
@@ -114,6 +117,11 @@ class DB
         }
         $sql = "SELECT {$column} FROM {$table} {$holder}";
         return $this->query($sql, $values);
+    }
+
+    public function raw($query, $params = [])
+    {
+        return $this->query($query, $params);
     }
     
     public function update($table, $columns = [], $params = [])

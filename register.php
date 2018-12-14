@@ -1,55 +1,6 @@
 <?php
     require_once 'init.php';
-
     use app\Input;
-    use app\Validation;
-    use app\Auth\Register;
-    
-    if (Input::exists()) {
-        if (Input::get('register')) {
-            $validation = new Validation();
-            $validate = $validation->check(
-                [
-                    'fname' => [
-                        'required' => true,
-                    ],
-                    'lname' => [
-                        'required' => true,
-                    ],
-                    'email' => [
-                        'required' => true,
-                        'email' => true,
-                    ],
-                    'password' => [
-                        'required' => true,
-                        'min' => 6,
-                    ],
-                    'password_confirmation' => [
-                        'required' => true,
-                        'matches' => 'password',
-                    ],
-                ],
-                [
-                    'fname' => [
-                        'required' => 'First Name is a Required Field',
-                    ],
-                ]
-            );
-            if (!$validate->passed()) {
-                var_dump($validation->errors());
-            } else {
-                $auth = new Register();
-                $auth->register(
-                    [
-                        'fname' => Input::get('fname'),
-                        'lname' => Input::get('lname'),
-                        'email' => Input::get('email'),
-                        'password' => Input::raw('password'),
-                    ]
-                );
-            }
-        }
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,7 +16,9 @@
         <br>
         <input type="text" name="lname" placeholder="Last Name" value="<?= Input::old('lname') ?>">
         <br>
-        <input type="text" name="email" placeholder="Email" value="<?= Input::old('email') ?>">
+        <input type="text" name="username" placeholder="Username" value="<?= Input::old('username') ?>">
+        <br>
+        <input type="email" name="email" placeholder="Email" value="<?= Input::old('email') ?>">
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>

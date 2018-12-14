@@ -67,6 +67,21 @@ class Validation
                             $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
                         }
                         break;
+                    case 'unique':
+                        $rule_value = explode(':', $rule_value);
+                        $table = $rule_value[0];
+                        $column = $rule_value[1];
+                        $db = DB::getInstance();
+                        if (isset($rule_value[2])) {
+                            $id = $rule_value[2];
+                            $result = $db->raw("SELECT $column FROM $table WHERE id NOT IN (?) AND  $column = ?", [$id, $value])->get();
+                        } else {
+                            $result = $db->select($table, [$column], [$column => $value])->get();
+                        }
+                        if ($result) {
+                            $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                        }
+                        break;
                 }
             }
         }
@@ -98,6 +113,10 @@ class Validation
             
             case 'email':
                 return "Invalid email format";
+                break;
+
+            case 'unique':
+                return "{$key} already exists";
                 break;
         }
     }

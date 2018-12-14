@@ -16,6 +16,11 @@ class Register
 
     public function register(Array $data)
     {
+        $data['avatar'] = $this->getAvatar();
         $this->_db->insert('users', $data);
+    }
+
+    private function getAvatar() {
+        return "assets/images/default/1.png";
     }
 }
