@@ -28,6 +28,6 @@ if (Input::exists()) {
         }
 
         $auth = new Login();
-        $auth->login(Input::get('email'),Input::raw('password'));
+        $auth->login(Input::get('email'), Input::raw('password'));
     }
 }

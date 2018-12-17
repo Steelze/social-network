@@ -9,6 +9,7 @@ use app\Auth\Register;
 
 if (Input::exists()) {
     if (Input::get('register')) {
+        Session::put('register', true);
         $validation = new Validation();
         $validate = $validation->check(
             [
@@ -22,7 +23,7 @@ if (Input::exists()) {
                     'required' => true,
                     'unique' => 'users:username',
                 ],
-                'email' => [
+                'reg_email' => [
                     'required' => true,
                     'email' => true,
                     'unique' => 'users:email',
@@ -53,7 +54,7 @@ if (Input::exists()) {
                 'fname' => Input::get('fname'),
                 'lname' => Input::get('lname'),
                 'username' => Input::get('username'),
-                'email' => Input::get('email'),
+                'email' => Input::get('reg_email'),
                 'password' => Hash::make(Input::raw('password')),
             ]
         );
