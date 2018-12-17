@@ -1,7 +1,9 @@
 <?php
-
+require_once 'require.php';
 use app\Hash;
 use app\Input;
+use app\Redirect;
+use app\Session;
 use app\Validation;
 use app\Auth\Register;
 
@@ -41,20 +43,21 @@ if (Input::exists()) {
             ]
         );
         if (!$validate->passed()) {
-            // var_dump($validation->errors());
-            // Redirect back to register
-        } else {
-            $auth = new Register();
-            $auth->register(
-                [
-                    'fname' => Input::get('fname'),
-                    'lname' => Input::get('lname'),
-                    'username' => Input::get('username'),
-                    'email' => Input::get('email'),
-                    'password' => Hash::make(Input::raw('password')),
-                ]
-            );
-            // Redirect back to register
+            Session::flash('errors', $validation->errors());
+            Redirect::to('register');
         }
+
+        $auth = new Register();
+        $auth->register(
+            [
+                'fname' => Input::get('fname'),
+                'lname' => Input::get('lname'),
+                'username' => Input::get('username'),
+                'email' => Input::get('email'),
+                'password' => Hash::make(Input::raw('password')),
+            ]
+        );
+        Session::flash('msg', 'Registration  successful. Login to continue');
+        Redirect::to('register');
     }
 }

@@ -25,7 +25,7 @@ class Validation
       *
       * @return $this
      */
-    public function check(Array $params, Array $msg)
+    public function check(Array $params, Array $msg = [])
     {
         $method = $_SERVER['REQUEST_METHOD'];
         switch ($method) {
@@ -61,7 +61,7 @@ class Validation
                         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                             $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
                         }
-                        break;
+                         break;
                     case 'matches':
                         if ($method[$rule_value] !== $method[$key]) {
                             $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));

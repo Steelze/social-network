@@ -14,7 +14,7 @@
             'db' => 'social',
         ],
         'salt' => '$%fgrt@!h454*&t',
-        'session' => 'user',
+        'user' => 'user',
         'token' => 'token',
         'trim-exception' => [
             'password',
@@ -30,4 +30,5 @@
 
     function sanitize($data ){
 	    return htmlentities(trim($data), ENT_QUOTES,"UTF-8" );
-	}
+    }
+    

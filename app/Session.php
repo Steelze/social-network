@@ -12,7 +12,7 @@ class Session {
         return $_SESSION[$key];
     }
 
-    public static function put(String $key, $value)
+    public static function put($key, $value)
     {
         return $_SESSION[$key] = $value;
     }
@@ -21,6 +21,17 @@ class Session {
     {
         if (self::exists($key)) {
             unset($_SESSION[$key]);
+        }
+    }
+    
+    public static function flash(String $key, $value = '')
+    {
+        if (self::exists($key)) {
+            $session = self::get($key);
+            self::delete($key);
+            return $session;
+        } else {
+            self::put($key, $value);
         }
     }
 }
