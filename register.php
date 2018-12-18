@@ -1,28 +1,24 @@
 <?php
 require_once 'init.php';
 use app\Input;
+use app\Assets;
 use app\Router;
 use app\Session;
-use app\Assets;
+use app\Redirect;
+use app\Auth\Auth;
+use app\Layouts;
 
+if (Auth::check()) {
+    Redirect::to('index');
+}
+$title = 'Register - Get Social';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register</title>
-    <script src="<?= Assets::url('js/all.min.js') ?>"></script>	
-    <link rel="stylesheet" href="<?= Assets::url('css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= Assets::url('css/style.css') ?>">
-    <link rel="stylesheet" href="<?= Assets::url('css/master_style.css') ?>">
-</head>
+<?php include_once  Layouts::includes('layouts.head') ?>
 <body class="hold-transition login-page">
     <!-- LOGIN PAGE -->
     <div class="login-box">
         <div class="login-logo">
-            <a href=""><b>MinimalLite</b>Admin</a>
+            <a href="#"><b>MinimalLite</b>Admin</a>
         </div>
         <!-- /logo -->
 
@@ -115,8 +111,7 @@ use app\Assets;
     </div>
     <!-- /.login-box -->
 
-    <script src="<?= Assets::url('js/jquery.min.js') ?>"></script>	
-    <script src="<?= Assets::url('js/bootstrap.min.js') ?>"></script>
+    <?php include_once  Layouts::includes('layouts.scripts') ?>
     <script>
         $(document).ready(function() {
             // On click register link show reg form

@@ -25,6 +25,7 @@ class Login
         if($data) {
             if ($this->checkPassword($password, $data->password)) {
                 Session::put(Config::get('user'), $data);
+                Session::put('loggedIn', true);
                 Redirect::to('index');
             }
         }
