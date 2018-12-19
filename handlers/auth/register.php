@@ -51,9 +51,9 @@ if (Input::exists()) {
         $auth = new Register();
         $auth->register(
             [
-                'fname' => Input::get('fname'),
-                'lname' => Input::get('lname'),
-                'username' => Input::get('username'),
+                'fname' => ucwords(Input::get('fname')),
+                'lname' => ucwords(Input::get('lname')),
+                'username' => strtolower(Input::get('username')),
                 'email' => Input::get('reg_email'),
                 'password' => Hash::make(Input::raw('password')),
             ]

@@ -1,0 +1,4 @@
+# If text in address bar matches rule go to profile with parameter
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9]+)$ profile/index.php?username=$1
+RewriteRule ^([a-zA-Z0-9]+)/$ profile/index.php?username=$1
