@@ -17,8 +17,10 @@ $title = 'Social Network';
 <?php include_once  Layouts::includes('layouts.head') ?>
 <body>
     <?php include_once  Layouts::includes('layouts.nav') ?>
-    
-    <p><?= Auth::user()->fname; ?></p>
-    <h1 class="text-danger">Hello Warld</h1>
+    <div class="container">
+        <div class="row">
+            <img src="<?= Auth::user()->avatar ?>" alt="<?= Auth::user()->fname ?>">
+        </div>
+    </div>
     <?php include_once  Layouts::includes('layouts.scripts') ?>
 </body>

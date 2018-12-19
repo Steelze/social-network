@@ -39,7 +39,7 @@ $title = 'Register - Get Social';
             <div id="login-box">
                 <form action="<?= Router::route('handlers.auth.login') ?>" method="post" class="form-element">
                     <div class="form-group">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email address" value="<?= Input::old('email') ?>">
+                        <input type="email" name="email" class="form-control" placeholder="Email address" value="<?= Input::old('email') ?>">
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" class="form-control" placeholder="Password">
