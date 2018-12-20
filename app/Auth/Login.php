@@ -7,6 +7,7 @@ use app\Hash;
 use app\Session;
 use app\Redirect;
 use app\Config;
+use app\Token;
 
 /**
  * undocumented class
@@ -26,6 +27,7 @@ class Login
             if ($this->checkPassword($password, $data->password)) {
                 Session::put(Config::get('user'), $data);
                 Session::put('loggedIn', true);
+                Token::setToken();
                 Redirect::to('index');
             }
         }

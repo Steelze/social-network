@@ -9,7 +9,7 @@ class Token {
 
     private static function exists()
     {
-        return (!Session::exists() || empty(Session::get(Config::get('token')))) ? true : false;
+        return (Session::exists(Config::get('token')) && !empty(Session::get(Config::get('token')))) ? true : false;
     }
 
     private static function generate()

@@ -54,11 +54,11 @@ Body :		Poppins, sans-serif;
 /*Body, layout*/
 .layout-boxed body, .layout-boxed html, .wrapper, body, html {
     height: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 .wrapper, body {
-    overflow-x: hidden;
-    overflow-y: auto;
+    /* overflow-x: hidden; */
+    /* overflow-y: auto; */
 }
 .h1, .h2, .h3, .h4, .h5, .h6, body, h1, h2, h3, h4, h5, h6 {
     font-family: Poppins, sans-serif;
@@ -11702,7 +11702,7 @@ table.dataTable thead .sorting:after {
     color: #fff;
 }
 .login-page, .register-page {
-    background: linear-gradient(60deg, rgba(44, 130, 201, 1),  rgba(107, 185, 240, 1) , rgba(197, 239, 247, 1)) center center no-repeat;
+    background: rgba(107, 185, 240, 1)  center center no-repeat;
     background-size: cover;
     height: 100%;
     width: 100%;

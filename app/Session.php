@@ -23,6 +23,11 @@ class Session {
             unset($_SESSION[$key]);
         }
     }
+
+    public function destroy()
+    {
+        session_destroy();
+    }
     
     public static function flash(String $key, $value = '')
     {

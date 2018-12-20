@@ -7,12 +7,17 @@ use app\Redirect;
 use app\Auth\Auth;
 use app\Layouts;
 use app\Model\User;
+use app\Token;
+use app\Router;
+use app\Model\Post;
+use Carbon\Carbon;
 
 
 if (!Auth::check()) {
     Redirect::to('register');
 }
 $user = new User();
+$posts = new Post();
 $title = 'Social Network';
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
@@ -33,8 +38,9 @@ $title = 'Social Network';
                             <h3 class="profile-username text-center"><a  href="<?= Auth::user()->username ?>"><?= $user->getFullName() ?></a></h3>
                             <p class="text-muted text-center">Accoubts Manager Jindal Cop.</p>
                             <div class="row social-states">
-                                <div class="col-6 text-right"><a href="#" class="link"><i class="fa fa-heart"></i> 254</a></div>
-                                <div class="col-6 text-left"><a href="#" class="link"><i class="fa fa-user"></i> 54</a></div>
+                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-heart"></i> 254</a></div>
+                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
+                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-user"></i> 54</a></div>
                             </div>
                         </div>
                         <!-- /.box-body -->
@@ -46,6 +52,18 @@ $title = 'Social Network';
                     <div class="nav-tabs-custom">
                         <div class="tab-content">
                             <div class="tab-pane active" id="activity">
+                            <p class="login-box-msg">
+                                <?php
+                                    if (Session::exists('errors')) {
+                                        foreach (Session::flash('errors') as $value) {
+                                            echo $value . '<br>';
+                                        }
+                                    } 
+                                    if (Session::exists('msg')) {
+                                        echo Session::flash('msg') . '<br>';
+                                    }
+                                ?>
+                            </p>
                                 <!-- upload -->
                                 <div class="post">
                                     <div class="user-block float-left">
@@ -53,40 +71,17 @@ $title = 'Social Network';
                                     </div>
                                     <!-- /.user-block -->
                                     <div class="activitytimeline">
-                                        <form class="form-element">
-                                            <textarea class="form-control input-sm" rows="4" placeholder="What's on your mind?"></textarea>
-                                            <button type="submit" class="btn btn-danger pull-right btn-sm">Send</button>
+                                        <form class="form-element" action="<?= Router::route('handlers.index.save-post') ?>" method="post">
+                                            <textarea class="form-control input-sm" name="post" rows="3" placeholder="What's on your mind?"></textarea>
+                                            <input type="hidden" name="token" value="<?= Token::getToken() ?>">
+                                            <input type="submit" name="new-post" class="btn btn-danger pull-right btn-sm" value="Post">
                                         </form>
                                     </div>
                                 </div>
                                 <!-- /.upload -->
                                 <!-- Post -->
-                                <div class="post">
-                                    <div class="user-block">
-                                        <img class="img-bordered-sm rounded-circle" src="<?= Auth::user()->avatar ?>" alt="<?= Auth::user()->fname ?>">
-                                            <span class="username">
-                                            <a href="#"><?= Auth::user()->fname ?></a>
-                                            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
-                                            </span>
-                                        <span class="description">5 minutes ago</span>
-                                    </div>
-                                    <!-- /.user-block -->
-                                    <div class="activitytimeline">
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                                        </p>
-                                        <ul class="list-inline">
-                                            <li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
-                                            <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-up margin-r-5"></i> Like</a>
-                                            </li>
-                                            <li class="pull-right">
-                                            <a href="#" class="link-black text-sm"><i class="fa fa-comments margin-r-5"></i> Comments
-                                                (5)</a></li>
-                                        </ul>
-                                        <form class="form-element">
-                                            <input class="form-control input-sm" type="text" placeholder="Type a comment">
-                                        </form>
-                                    </div>
+                                <div class="post-wrapper">
+
                                 </div>
                                 <!-- /.post -->                    
                             </div>
@@ -99,10 +94,44 @@ $title = 'Social Network';
                 <!-- /.col -->
             </div>
             <!-- /.row -->
-
         </section>
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
     <?php include_once  Layouts::includes('layouts.scripts') ?>
+    <script>
+        $(document).ready(function() {
+            let limit = 2;
+            let start = 0;
+            more = true;
+            function loadMorePosts(start, limit) {
+                $.post({
+                    url: "<?= Router::route('handlers.ajax.load-posts')?>",
+                    data: {limit, start},
+                    cache: false,
+                    success(data) {
+                        if (data === '') {
+                            more = false;
+                            $('.post-wrapper').append('<p class="text-center">No posts available</p>');
+                        } else {
+                            $('.post-wrapper').append(data);
+                            console.log(data);
+                            more = true;
+                        }
+                    }
+                })
+            }
+            loadMorePosts(start, limit);
+            // https://stackoverflow.com/questions/3898130/check-if-a-user-has-scrolled-to-the-bottom
+            $(window).scroll(function() {
+                if(($(window).scrollTop() + $(window).height() == $(document).height()) && more) {
+                    more = false;
+                    start += limit;
+                    console.log('here');
+                    
+                    loadMorePosts(start, limit);
+                }
+            });
+        });
+    </script>
 </body>

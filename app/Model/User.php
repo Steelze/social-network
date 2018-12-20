@@ -41,6 +41,11 @@ class User
 
     public function postsCount()
     {
-        return $this->_db->select('posts', [], [$column => $value])->first()
+        return $this->_db->raw("SELECT count(id) AS num FROM posts WHERE user_id = ?", [Auth::user()->id])->first()->num;
+    }
+
+    public function getUser()
+    {
+        return $this->_user;
     }
 }

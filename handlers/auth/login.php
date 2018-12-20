@@ -1,5 +1,5 @@
 <?php
-require_once 'require.php';
+require_once '../require.php';
 use app\Hash;
 use app\Input;
 use app\Redirect;
@@ -31,3 +31,5 @@ if (Input::exists()) {
         $auth->login(Input::get('email'), Input::raw('password'));
     }
 }
+
+Redirect::to('index');

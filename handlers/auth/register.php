@@ -1,5 +1,5 @@
 <?php
-require_once 'require.php';
+require_once '../require.php';
 use app\Hash;
 use app\Input;
 use app\Redirect;
@@ -62,3 +62,5 @@ if (Input::exists()) {
         Redirect::to('register');
     }
 }
+
+Redirect::to('index');

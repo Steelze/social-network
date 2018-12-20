@@ -1,6 +1,7 @@
 <?php
     use app\Router;
     use app\Auth\Auth;
+    use app\Token;
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="<?= Router::route('index') ?>">Social</a>
@@ -37,6 +38,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-cog"></i></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link"  href="javascript:void(0)" title="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out-alt"></i></a>
+            </li>
+            <form action="<?= Router::route('handlers.auth.logout') ?>" method="post" id="logout-form">
+                <input type="hidden" name="token" value="<?php echo Token::getToken(); ?>">
+            </form>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Dropdown
