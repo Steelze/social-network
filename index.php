@@ -38,9 +38,9 @@ $title = 'Social Network';
                             <h3 class="profile-username text-center"><a  href="<?= Auth::user()->username ?>"><?= $user->getFullName() ?></a></h3>
                             <p class="text-muted text-center">Accoubts Manager Jindal Cop.</p>
                             <div class="row social-states">
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-heart"></i> 254</a></div>
+                                <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="#" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
                                 <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-user"></i> 54</a></div>
+                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
                             </div>
                         </div>
                         <!-- /.box-body -->
@@ -52,18 +52,18 @@ $title = 'Social Network';
                     <div class="nav-tabs-custom">
                         <div class="tab-content">
                             <div class="tab-pane active" id="activity">
-                            <p class="login-box-msg">
-                                <?php
-                                    if (Session::exists('errors')) {
-                                        foreach (Session::flash('errors') as $value) {
-                                            echo $value . '<br>';
+                                <p class="login-box-msg">
+                                    <?php
+                                        if (Session::exists('errors')) {
+                                            foreach (Session::flash('errors') as $value) {
+                                                echo $value . '<br>';
+                                            }
+                                        } 
+                                        if (Session::exists('msg')) {
+                                            echo Session::flash('msg') . '<br>';
                                         }
-                                    } 
-                                    if (Session::exists('msg')) {
-                                        echo Session::flash('msg') . '<br>';
-                                    }
-                                ?>
-                            </p>
+                                    ?>
+                                </p>
                                 <!-- upload -->
                                 <div class="post">
                                     <div class="user-block float-left">
@@ -81,7 +81,6 @@ $title = 'Social Network';
                                 <!-- /.upload -->
                                 <!-- Post -->
                                 <div class="post-wrapper">
-
                                 </div>
                                 <!-- /.post -->                    
                             </div>
@@ -115,7 +114,7 @@ $title = 'Social Network';
                             $('.post-wrapper').append('<p class="text-center">No posts available</p>');
                         } else {
                             $('.post-wrapper').append(data);
-                            console.log(data);
+                            // console.log(data);
                             more = true;
                         }
                     }
@@ -127,11 +126,45 @@ $title = 'Social Network';
                 if(($(window).scrollTop() + $(window).height() == $(document).height()) && more) {
                     more = false;
                     start += limit;
-                    console.log('here');
-                    
                     loadMorePosts(start, limit);
                 }
             });
+            //
         });
+        function commentBox(id) {
+            const element = document.getElementById(`comment-box${id}`);
+            if (element.style.display == "block") {
+                element.style.display = "none";
+            } else {
+                element.style.display = "block";
+            }
+        }
+        // <i class="fa fa-thumbs-up margin-r-5">
+        function likePost(element, id) {
+            let count = $(`#like-count${id}`).text();
+            let total_count = $('#like-count').text();
+            if (element.classList.contains('text-primary')) {
+                element.classList.remove('text-primary')
+                $(`#like-count${id}`).text(parseInt(count) - 1);
+                $('#like-count').text(parseInt(total_count) - 1);
+                action = 'unlike';
+            } else {
+                element.className += ' text-primary';
+                $(`#like-count${id}`).text(parseInt(count) + 1);
+                $('#like-count').text(parseInt(total_count) + 1);
+                action = 'like';
+            }
+            $.post({
+                url: "<?= Router::route('handlers.ajax.like-posts')?>",
+                data: {token: "<?= Token::getToken()?>", 'action': action, id},
+                cache: false,
+                success(data) {
+                    // console.log(data);
+                },
+                error(e) {
+                    console.log(e  + 'error');
+                }
+            })
+        }
     </script>
 </body>

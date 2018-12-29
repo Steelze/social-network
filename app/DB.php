@@ -51,6 +51,16 @@ class DB
         return $this;
     }
 
+    public function count()
+    {
+        return $this->_count;
+    }
+    
+    public function exists()
+    {
+        return ($this->_count) ? true : false;
+    }
+
     public function first()
     {
         return $this->_results[0];

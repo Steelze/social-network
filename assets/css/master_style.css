@@ -14536,3 +14536,7 @@ hr {
   border-right-color: #e4e7ea;
   border-bottom-color: transparent;
 }
+
+.no-pad {
+  padding: 0px;
+}

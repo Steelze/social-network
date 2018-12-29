@@ -11,7 +11,7 @@ class Layouts
         if ($path) {
             $path = implode('/', explode('.', $path));
             $path = 'includes/'.$path.'.php';
-            return $path;
+            return $_SERVER['DOCUMENT_ROOT'].PROOT.$path;
         }
     }
 }
