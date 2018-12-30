@@ -8,10 +8,11 @@ use Carbon\Carbon;
 use app\Redirect;
 use app\Router;
 use app\Auth\Auth;
+use app\Model\User;
 
 if (Input::exists()) {
     $posts = new Post();
-    $data = $posts->newsfeed(Input::get('start'), Input::get('limit'));
+    $data = $posts->timeline(Input::get('id'), Input::get('start'), Input::get('limit'));
     ob_start();
     foreach($data as $post):
     ?>
@@ -43,7 +44,9 @@ if (Input::exists()) {
                     </li>
                     <li class="pull-right">
                     <button type="button" onclick="commentBox(<?= $post->id ?>)" class="link-black text-sm btn btn-outline no-pad"><i class="fa fa-comments margin-r-5"></i> (<?= $post->comment ?>)</button></li>
-                    <?php if(Auth::user()->id === $post->user_id): ?>
+                    <?php
+                        $user = new User(Input::get('id'));
+                        if(Auth::user()->id === $post->user_id || Auth::user()->id === $user->getUser()->id ): ?>
                         <li class="pull-right">
                         <button type="button" onclick="deletePost(<?= $post->id ?>)" class="link-black text-sm btn btn-outline no-pad"><i class="fa fa-trash margin-r-5"></i></button></li>
                     <?php endif ?>

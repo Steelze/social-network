@@ -21,7 +21,7 @@
         </form>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#"><?= Auth::user()->fname ?></a>
+                <a class="nav-link" href="<?= Router::route(Auth::user()->username, [], false) ?>"><?= Auth::user()->fname ?></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="<?= Router::route('index') ?>"><i class="fa fa-home"></i><span class="sr-only">(current)</span></a>

@@ -2,10 +2,13 @@
 namespace app;
 
 class Router {
-    public static function route(String $route = null, Array $params = [])
+    public static function route(String $route = null, Array $params = [], $suffix = true)
     {
         if ($route) {
-            $route = PROOT.implode('/', explode('.', $route)).'.php';
+            $route = PROOT.implode('/', explode('.', $route));
+            if ($suffix) {
+                $route .= '.php';
+            }
             if (count($params)) {
                 $i = 0;
                 foreach ($params as $key => $value) {

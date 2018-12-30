@@ -17,8 +17,7 @@ if (!Auth::check()) {
     Redirect::to('register');
 }
 $user = new User();
-$posts = new Post();
-$title = 'Social Network';
+
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
 <body>
@@ -131,6 +130,23 @@ $title = 'Social Network';
             });
             //
         });
+
+        function deletePost(id) {
+            $.post({
+                url: "<?= Router::route('handlers.ajax.delete-post')?>",
+                data: {token: "<?= Token::getToken()?>", id},
+                cache: false,
+                success(data) {
+                    // console.log(data);
+                    location.reload();
+                    // // $(".content").load(location.href + " .content");
+                },
+                error(e) {
+                    console.log(e  + 'error');
+                }
+            })
+        }
+
         function commentBox(id) {
             const element = document.getElementById(`comment-box${id}`);
             if (element.style.display == "block") {

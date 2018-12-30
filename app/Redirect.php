@@ -2,19 +2,22 @@
 namespace app;
 
 class Redirect {
-    public static function to($location = null, Array $params = [])
+    public static function to($location = null, Array $params = [], $suffix = true)
     {
         if ($location) {
             if (is_numeric($location)) {
                 switch ($location) {
                     case '404':
-                        header('HTTP/1.1 404 Not Found');
-                        include_once '../includes/errors/404.php';
-                        exit;
-                        break;
+                    header('HTTP/1.1 404 Not Found');
+                    include_once '../includes/errors/404.php';
+                    exit;
+                    break;
                 }
             }
-            $location = PROOT.implode('/', explode('.', $location)).'.php';
+            $location = PROOT.implode('/', explode('.', $location));
+            if ($suffix) {
+                $location .= '.php';
+            }
             if (count($params)) {
                 $i = 0;
                 foreach ($params as $key => $value) {
@@ -28,7 +31,7 @@ class Redirect {
             }
             header('Location: '.$location);
             exit;
-
+            
         }
         # code...
     }

@@ -29,6 +29,7 @@ class DB
 
     private function query($sql, $params = [])
     {
+        // dd($params);
         $this->_error = false;
         if ($this->_query = $this->_pdo->prepare($sql)) {
             if (!empty($params)) {
