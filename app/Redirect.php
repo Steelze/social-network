@@ -9,7 +9,7 @@ class Redirect {
                 switch ($location) {
                     case '404':
                     header('HTTP/1.1 404 Not Found');
-                    include_once '../includes/errors/404.php';
+                    include_once Layouts::includes('errors.404');
                     exit;
                     break;
                 }

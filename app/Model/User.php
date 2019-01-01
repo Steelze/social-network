@@ -184,4 +184,19 @@ class User
     {
         return count($this->mutual($id));
     }
+
+    public function searchFriends(String $var)
+    {
+        $bucket = [];
+        $data = $this->_db->raw("SELECT id, fname, lname, avatar, username FROM users WHERE fname LIKE ? OR lname LIKE ? OR username LIKE ? AND deleted_at IS NULL", ["%$var%", "%$var%", "%$var%"])->get();
+        
+        foreach ($data as $value) {
+            if ($value->id !== $this->_user->id && $this->isFriend($value->id)) {
+                $value->mutual = $this->mutualCount($value->id);
+                $bucket[] = $value;
+            }
+        }
+
+        return $bucket;
+    }
 }

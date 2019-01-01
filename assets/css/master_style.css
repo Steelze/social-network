@@ -14540,3 +14540,7 @@ hr {
 .no-pad {
   padding: 0px;
 }
+
+.px-20 {
+  padding: 0px 20px !important;
+}

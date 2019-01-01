@@ -3,3 +3,4 @@
 ?>
 <script src="<?= Assets::url('js/jquery.min.js') ?>"></script>	
 <script src="<?= Assets::url('js/bootstrap.min.js') ?>"></script>
+<script src="<?= Assets::url('js/jquery.slimscroll.min.js') ?>"></script>
