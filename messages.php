@@ -18,6 +18,7 @@ if (!Auth::check()) {
 }
 $auth = new User();
 $message = new Message();
+$message->allViewed();
 
 if (Input::exists('get')) {
     if (Input::get('u') !== '') {
