@@ -42,6 +42,10 @@ if ($data !== 'new') {
     }
 }
 
+if (!$auth->isFriend($user->getUser()->id)) {
+    $data = 'new';
+}
+
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
 <body>

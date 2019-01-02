@@ -25,14 +25,7 @@ if (!$user->getUser()) {
 
 $auth = new User();
 $title = ucwords(Input::get('username')).' - Social Network';
-// $posts = new Post();
-// foreach($posts->timeline(6,0,9) as $key) {
-//     print_r($key);
-//     echo '<br>';
-//     echo '<br>';
-//     echo '<br>';
-// }
-// exit;
+
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
 <body>
@@ -75,9 +68,9 @@ $title = ucwords(Input::get('username')).' - Social Network';
                                     <?php endif ?>
                             <?php endif ?>
                             <div class="row social-states">
-                                <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="#" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
+                                <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="javascript:void(0)" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
+                                <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
+                                <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
                             </div>
                         </div>
                         <!-- /.box-body -->

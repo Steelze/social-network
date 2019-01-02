@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 
-use app\Config;
 use app\Session;
 use app\Redirect;
 use app\Auth\Auth;
@@ -37,9 +36,9 @@ $user = new User();
                             <h3 class="profile-username text-center"><a  href="<?= Auth::user()->username ?>"><?= $user->getFullName() ?></a></h3>
                             <p class="text-muted text-center">Accoubts Manager Jindal Cop.</p>
                             <div class="row social-states">
-                                <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="#" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
-                                <div class="col-4 text-center"><a href="#" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
+                                <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="javascript:void(0)" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
+                                <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
+                                <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
                             </div>
                         </div>
                         <!-- /.box-body -->

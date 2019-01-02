@@ -94,6 +94,14 @@ class User
         return ($data->exists()) ? true : false;
     }
 
+    public function frienRequestCount()
+    {
+        return $this->_db->select('friends', [], [
+            'friend_id' => $this->_user->id,
+            'accepted' => 0,
+        ])->count();
+    }
+
     public function friends()
     {
         return array_merge($this->myFriend(), $this->friendOfMine());

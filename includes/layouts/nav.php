@@ -4,7 +4,11 @@
     use app\Token;
     use app\Model\Message;
     use app\Model\User;
+    use app\Model\Notification;
+    use Carbon\Carbon;
+    $user = new User();
     $message = new Message();
+    $notifications = new Notification();
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="<?= Router::route('index') ?>">Social</a>
@@ -22,10 +26,7 @@
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Router::route(Auth::user()->username, [], false) ?>"><?= Auth::user()->fname ?></a>
-            </li>
+        <ul class="navbar-nav" style="margin-right: 20px;">
             <li class="nav-item active">
                 <a class="nav-link" href="<?= Router::route('index') ?>"><i class="fa fa-home"></i><span class="sr-only">(current)</span></a>
             </li>
@@ -33,7 +34,7 @@
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-envelope"></i>
                     <?php if ($message->unreadCount()): ?>
-                        <span class="badge badge-pill badge-danger" style="font-size: 9px;"><?= $message->unreadCount() ?></span>
+                        <span class="badge badge-pill badge-danger drop" style="font-size: 9px;"><?= $message->unreadCount() ?></span>
                     <?php endif ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
@@ -55,11 +56,36 @@
                     <a class="dropdown-item text-center" href="<?= Router::route('messages') ?>">See all</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-bell"></i></a>
+            <li class="nav-item dropdown" id="notif">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bell"></i>
+                    <?php if ($notifications->unreadCount()): ?>
+                        <span class="badge badge-pill badge-danger notif" style="font-size: 9px;"><?= $notifications->unreadCount() ?></span>
+                    <?php endif ?>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                    <div class="media-list media-list-hover media-list-divided">
+                        <?php foreach($notifications->getNotifications() as $key): ?>
+                            <a href="<?= $key->link ?>">
+                                <div class="media media-single <?= (!$key->opened) ? 'bg-secondary' : '' ?>">
+                                    <div class="media-body">
+                                        <small><?= $key->message ?></small>
+                                        <small><b> - <?= Carbon::parse($key->created_at)->diffForHumans() ?></b></small>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                        <?php endforeach ?>
+                    </div>
+                    <a class="dropdown-item text-center" href="<?= Router::route('notifications') ?>">See all</a>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-users"></i></a>
+                <a class="nav-link" href="<?= Router::route('friend-requests') ?>"><i class="fa fa-users"></i>
+                <?php if ($user->frienRequestCount()): ?>
+                    <span class="badge badge-pill badge-danger drop" style="font-size: 9px;"><?= $user->frienRequestCount() ?></span>
+                <?php endif ?>
+            </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-cog"></i></a>

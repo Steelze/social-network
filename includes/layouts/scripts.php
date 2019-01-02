@@ -7,8 +7,8 @@
 <script src="<?= Assets::url('js/bootstrap.min.js') ?>"></script>
 <script src="<?= Assets::url('js/jquery.slimscroll.min.js') ?>"></script>
 <script>
-    $('#drop').on('show.bs.dropdown', function() {
-        $(document).ready(function() {
+    $(document).ready(function() {
+        $('#drop').on('show.bs.dropdown', function() {
             $.post({
                 url: "<?= Router::route('handlers.ajax.msg-count')?>",
                 data: {token: "<?= Token::getToken()?>"},
@@ -16,7 +16,22 @@
                 success(data) {
                     // console.log(data);
                     // location.reload();
-                    $(".badge-pill").remove();
+                    $(".drop").remove();
+                },
+                error(e) {
+                    console.log(e  + 'error');
+                }
+            })
+        });
+        $('#notif').on('show.bs.dropdown', function() {
+            $.post({
+                url: "<?= Router::route('handlers.ajax.notif-count')?>",
+                data: {token: "<?= Token::getToken()?>"},
+                cache: false,
+                success(data) {
+                    // console.log(data);
+                    // location.reload();
+                    $(".notif").remove();
                 },
                 error(e) {
                     console.log(e  + 'error');

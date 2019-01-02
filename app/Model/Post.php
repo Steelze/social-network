@@ -8,12 +8,18 @@ use app\Auth\Auth;
 class Post
 {
     private $_db;
-    private $_user = null;
+    // private $_post = null;
 
     public function __construct() {
         $this->_db = DB::getInstance();
     }
 
+    public function check($value, $column = null)
+    {
+        $data = $this->_db->select('posts', ['id'], ['id' => $value]);
+        return ($data->exists()) ? true : false;
+    }
+    
     public function find($value, $column = null)
     {
         $column = ($column) ? $column : 'id';
@@ -30,6 +36,10 @@ class Post
         ]);
 
         //if recepient, send notification
+        if ($recepient) {
+            $notif = new Notification();
+            $notif->create($returned_id, $recepient, 'profile');
+        }
     }
     
     public function delete($id)
@@ -37,7 +47,24 @@ class Post
         $this->_db->delete('posts', [
             'id' => $id,
         ]);
-        //if recepient, send notification
+    }
+
+    public function getSingle($id)
+    {
+        $id = (int)$id;
+        $data = $this->_db->raw("SELECT posts.*, users.fname, users.lname, users.avatar, users.username FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.deleted_at IS NULL AND posts.id = $id AND posts.deleted_at IS NULL AND users.deleted_at IS NULL")->first();
+
+        $data->comment = $this->_db->raw("SELECT count(id) AS num FROM comments WHERE post_id = ?", [$data->id])->first()->num;
+        $data->like = $this->_db->raw("SELECT count(id) AS num FROM likes WHERE post_id = ?", [$data->id])->first()->num;
+        $data->hasLiked = ($this->_db->select('likes', [], ['post_id' => $data->id, 'user_id' => Auth::user()->id])->count()) ? true : false;
+        $comments = new Comment();
+        $data->comments = $comments->timeline($data->id);
+        if ($data->recepient) {
+            $user = new User($data->recepient);
+            $data->recepient = $user->getUser();
+        }
+
+        return $data;
     }
 
     public function newsfeed($start, $limit = 7)
@@ -95,9 +122,6 @@ class Post
                 
             } 
         }
-
-        // 
-        
         return $data;
     }
 }

@@ -19,6 +19,14 @@ class Like
             'post_id' => $post_id,
             'user_id' => Auth::user()->id,
         ]);
+
+        $post = new Post();
+        $data = $post->find($post_id);
+        if ((int)$data->user_id !== (int)Auth::user()->id) {
+            $notif = new Notification();
+            $notif->create($post_id, $data->user_id, 'like');
+        }
+
     }
     
     public function unlike($post_id)
