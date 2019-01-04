@@ -40,31 +40,33 @@ class Validation
         foreach ($params as $key => $rules) {
             foreach ($rules as $rule => $rule_value) {
                 $key = sanitize($key);
-                $value = (!in_array($key, Config::get('trim-exception'))) ? sanitize($method[$key]) : $method[$key];
-                Session::put($key, $value);
+                if ($rule !== 'file' && $rule !== 'size' && $rule !== 'ext') {
+                    $value = (!in_array($key, Config::get('trim-exception'))) ? sanitize($method[$key]) : $method[$key];
+                    Session::put($key, $value);
+                }
                 if ($rule === 'required' && $rule_value === true && empty($value)) {
-                    $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                    $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
                 }
                 switch ($rule) {
                     case 'min':
                         if (strlen($value) < $rule_value) {
-                            $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
+                            $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
                         }
                         break;
 
                     case 'max':
                         if (strlen($value) > $rule_value) {
-                            $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
+                            $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
                         }
                         break;
                     case 'email':
                         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                            $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                            $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
                         }
                          break;
                     case 'matches':
                         if ($method[$rule_value] !== $method[$key]) {
-                            $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
+                            $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
                         }
                         break;
                     case 'unique':
@@ -80,7 +82,31 @@ class Validation
                                 $result = $db->select($table, [$column], [$column => $value])->get();
                             }
                             if ($result) {
-                                $this->addError($key, (array_key_exists($rule, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                                $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                            }
+                        }
+                        break;
+                    case 'file':
+                        if ($rule_value) {
+                            if (isset($_FILES[$key]) && empty($_FILES[$key]['name'])) {
+                                $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key));
+                            }
+                        }
+                        break;
+                    case 'ext':
+                        if (isset($_FILES[$key])) {
+                            $tmp = explode('.', $_FILES[$key]['name']);
+                            $ext = strtolower(end($tmp));
+                            $rule_value = explode(':', $rule_value);
+                            if (!in_array($ext, $rule_value)) {
+                                $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, implode(', or ', $rule_value)));
+                            }
+                        }
+                        break;
+                    case 'size':
+                        if (isset($_FILES[$key])) {
+                            if ($_FILES[$key]['size'] > ($rule_value * 1024000)) {
+                                $this->addError($key, (array_key_exists($key, $msg) && array_key_exists($rule, $msg[$key])) ? $msg[$key][$rule] : $this->defaultError($rule, $key, $rule_value));
                             }
                         }
                         break;
@@ -109,6 +135,14 @@ class Validation
                 return "{$key} cannot be more than {$value} characters";
                 break;
             
+            case 'ext':
+                return "{$key} must be in {$value} format";
+                break;
+            
+            case 'size':
+                return "{$key} cannot be larger than {$value}MB";
+                break;
+            
             case 'matches':
                 return "{$key} must match {$value}";
                 break;
@@ -119,6 +153,10 @@ class Validation
 
             case 'unique':
                 return "{$key} already exists";
+                break;
+            
+            case 'file':
+                return "{$key} file is required";
                 break;
         }
     }

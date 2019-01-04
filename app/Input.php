@@ -51,4 +51,9 @@ class Input
         }
         return $data;
     }
+    
+    public static function old_exist(String $value)
+    {
+        return (Session::exists($value)) ? true : false;
+    }
 }

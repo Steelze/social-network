@@ -35,7 +35,7 @@ class Login
         Redirect::to('register');
     }
 
-    private function checkPassword($password, $hash)
+    public function checkPassword($password, $hash)
     {
         return (Hash::check($password, $hash)) ? true : false;
     }

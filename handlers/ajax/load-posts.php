@@ -36,6 +36,18 @@ if (Input::exists()) {
                 <p>
                     <?= $post->body ?>
                 </p>
+                <?php
+                    $arr = preg_split("/\s+/", $post->body);
+                    foreach ($arr as $value) {
+                        if (strpos($value, "https://www.youtube.com/watch?v=") !== false) {
+                            $link = preg_split("!&!", $value);
+                            $a = str_replace("watch?v=", "embed/", $link[0]);
+                        ?>
+                            <iframe src="<?= $a ?>" height="300" width="100%" frameborder="0"></iframe>
+                                <?php
+                        }
+                    }
+                ?>
                 <ul class="list-inline">
                     <li><button type="button" class="link-black text-sm no-pad btn btn-outline"><i class="fa fa-share margin-r-5"></i> Share</button></li>
                     <li><button type="button" class="btn btn-outline link-black text-sm no-pad <?= ($post->hasLiked) ? 'text-primary' : '' ?>" onclick="likePost(this, <?= $post->id ?>)"><i class="fa fa-thumbs-up margin-r-5"></i></button>

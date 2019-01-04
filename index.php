@@ -10,12 +10,14 @@ use app\Token;
 use app\Router;
 use app\Model\Post;
 use Carbon\Carbon;
+use app\Model\Trend;
 
 
 if (!Auth::check()) {
     Redirect::to('register');
 }
 $user = new User();
+$trends = new Trend();
 
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
@@ -34,12 +36,23 @@ $user = new User();
                             <img class="profile-user-img rounded-circle img-fluid mx-auto d-block" src="<?= Auth::user()->avatar ?>" alt="<?= Auth::user()->fname ?>">
 
                             <h3 class="profile-username text-center"><a  href="<?= Auth::user()->username ?>"><?= $user->getFullName() ?></a></h3>
-                            <p class="text-muted text-center">Accoubts Manager Jindal Cop.</p>
                             <div class="row social-states">
                                 <div class="col-4 text-center"><i class="fa fa-heart"></i> <a href="javascript:void(0)" id="like-count" class="link"><?= $user->likesCount() ?></a></div>
                                 <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-newspaper"></i> <?= $user->postsCount() ?></a></div>
                                 <div class="col-4 text-center"><a href="javascript:void(0)" class="link"><i class="fa fa-user"></i> <?= $user->friendsCount() ?></a></div>
                             </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                    <!-- Trend -->
+                    <div class="box">
+                        <div class="card" style="width: 20rem;">
+                            <ul class="list-group list-group-flush">
+                                <?php foreach($trends->get() as $trend): ?>
+                                    <li class="list-group-item"><?= ucwords($trend->trend) ?></li>
+                                <?php endforeach ?>
+                            </ul>
                         </div>
                         <!-- /.box-body -->
                     </div>

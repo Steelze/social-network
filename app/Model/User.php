@@ -207,4 +207,24 @@ class User
 
         return $bucket;
     }
+
+    public function searchAll(String $var, $all = true)
+    {
+        $bucket = [];
+
+        if ($all) {
+            $data = $this->_db->raw("SELECT id, fname, lname, avatar, username FROM users WHERE fname LIKE ? OR lname LIKE ? AND deleted_at IS NULL", ["%$var%", "%$var%"])->get();
+        } else {
+            $data = $this->_db->raw("SELECT id, fname, lname, avatar, username FROM users WHERE fname LIKE ? OR lname LIKE ? AND deleted_at IS NULL LIMIT 5", ["%$var%", "%$var%"])->get();
+        }
+        
+        foreach ($data as $value) {
+            if ($value->id !== $this->_user->id) {
+                $value->mutual = $this->mutualCount($value->id);
+                $bucket[] = $value;
+            }
+        }
+
+        return $bucket;
+    }
 }

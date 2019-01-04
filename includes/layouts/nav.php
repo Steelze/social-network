@@ -6,7 +6,7 @@
     use app\Model\User;
     use app\Model\Notification;
     use Carbon\Carbon;
-    $user = new User();
+    $auth = new User();
     $message = new Message();
     $notifications = new Notification();
 ?>
@@ -18,14 +18,8 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
+            
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
         <ul class="navbar-nav" style="margin-right: 20px;">
             <li class="nav-item active">
                 <a class="nav-link" href="<?= Router::route('index') ?>"><i class="fa fa-home"></i><span class="sr-only">(current)</span></a>
@@ -82,13 +76,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="<?= Router::route('friend-requests') ?>"><i class="fa fa-users"></i>
-                <?php if ($user->frienRequestCount()): ?>
-                    <span class="badge badge-pill badge-danger drop" style="font-size: 9px;"><?= $user->frienRequestCount() ?></span>
+                <?php if ($auth->frienRequestCount()): ?>
+                    <span class="badge badge-pill badge-danger drop" style="font-size: 9px;"><?= $auth->frienRequestCount() ?></span>
                 <?php endif ?>
             </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-cog"></i></a>
+                <a class="nav-link" href="<?= Router::route('settings') ?>"><i class="fa fa-cog"></i></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link"  href="javascript:void(0)" title="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out-alt"></i></a>
@@ -99,3 +93,17 @@
         </ul>
     </div>
 </nav>
+<div class="" style="background: #F5F6F7;">
+    <div class="col-sm-6 offset-sm-3">
+        <form autocomplete="off" action="<?= Router::route('search-friends') ?>" method="get">
+            <div class="form-element">
+                <input class="form-control" type="text" placeholder="Search" name="q" onkeyup="searchFriends(this.value)">
+            </div>
+        </form>
+        <div class="box-body p-0" style="background: #FFF;">
+            <div class="media-list media-list-hover media-list-divided search-results">
+                    
+            </div>
+        </div>
+    </div>
+</div>

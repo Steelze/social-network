@@ -39,4 +39,22 @@
             })
         });
     })
+    function searchFriends(value) {
+        if (value.trim() == '') {
+            $('.search-results').text('');
+            return;
+        }
+        $.post({
+            url: "<?= Router::route('handlers.ajax.search-all')?>",
+            data: {value},
+            cache: false,
+            success(data) {
+                if (data === '') {
+                    $('.search-results').html("<div class='p-3'>No results found</div>");
+                } else {
+                    $('.search-results').html(data);
+                }
+            }
+        })
+    }
 </script>
