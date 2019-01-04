@@ -1,5 +1,5 @@
 <?php
-require_once 'init.php';
+require_once $_SERVER['DOCUMENT_ROOT'].PROOT.'init.php';
 use app\Router;
 use app\Layouts;
 
