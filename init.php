@@ -1,5 +1,5 @@
 <?php
-    require "vendor/autoload.php";
+    require_once "vendor/autoload.php";
     session_start();
     define('DS', DIRECTORY_SEPARATOR);
     define('ROOT', __DIR__);

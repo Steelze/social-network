@@ -3,8 +3,6 @@ namespace app\Model;
 
 use app\DB;
 use app\Auth\Auth;
-use app\Model\Trend;
-
 
 class Post
 {
