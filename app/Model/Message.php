@@ -15,11 +15,25 @@ class Message
 
     public function create($id, $message)
     {
-        $this->_db->insert('messages', [
+        $data = $this->_db->insert('messages', [
             'sender' => Auth::user()->id,
             'recepient' => $id,
             'message' => $message,
         ]);
+        $options = array(
+            'cluster' => 'eu',
+            'useTLS' => true
+          );
+
+          $pusher = new Pusher(
+            'a6a522ec2e6eadc05461',
+            '85502e9f5cd7ecf743a5',
+            '695697',
+            $options
+          );
+        
+          $pusher->trigger('my-channel', 'my-event', $data);
+          return $data;
     }
 
     public function getConvos()

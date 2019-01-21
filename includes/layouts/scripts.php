@@ -2,12 +2,24 @@
     use app\Assets;
     use app\Token;
     use app\Router;
+    use app\Auth\Auth;
 ?>
 <script src="<?= Assets::url('js/jquery.min.js') ?>"></script>	
 <script src="<?= Assets::url('js/bootstrap.min.js') ?>"></script>
 <script src="<?= Assets::url('js/jquery.slimscroll.min.js') ?>"></script>
+<script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 <script>
+    const id = <?= Auth::user()->id ?>;
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('a6a522ec2e6eadc05461', {
+    cluster: 'eu',
+    forceTLS: true
+    });
+
+    const  channel = pusher.subscribe(`channel-${id}`);
     $(document).ready(function() {
+
         $('#drop').on('show.bs.dropdown', function() {
             $.post({
                 url: "<?= Router::route('handlers.ajax.msg-count')?>",

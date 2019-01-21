@@ -106,8 +106,9 @@ class DB
         $keys = '`'.implode('`, `', array_keys($fields)).'`';
         $values = rtrim(str_repeat('?, ', count($fields)), ', ');
         $sql = "INSERT INTO `{$table}` ($keys) VALUES ($values) ";
-        if (!$this->query($sql, array_values($fields))) {
-            return true;
+        if ($this->query($sql, array_values($fields))) {
+            $data = $this->select($table, [], ['id' => $this->_pdo->lastInsertId()])->first();
+            return $data;
         }
         return false;
     }
@@ -156,7 +157,7 @@ class DB
             $holder = rtrim($holder, ' AND ');
         }
         $sql = "UPDATE {$table} SET {$keys} {$holder}";
-        if (!$this->query($sql, array_merge(array_values($columns), array_values($params)))) {
+        if ($this->query($sql, array_merge(array_values($columns), array_values($params)))) {
             return true;
         }
         return false;

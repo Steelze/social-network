@@ -5,6 +5,7 @@
         }
     },
     "require": {
-        "nesbot/carbon": "^2.7"
+        "nesbot/carbon": "^2.7",
+        "pusher/pusher-php-server": "^3.3"
     }
 }

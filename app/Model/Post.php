@@ -73,7 +73,7 @@ class Post
         $stopWordsArray = array_map('strtolower', preg_split("/[\s,]+/", $stopWords));
 
         //Remove all punctionation
-        $no_punctuation = preg_replace("/[^a-zA-Z 0-9]+/", "", $body);
+        $no_punctuation = preg_replace("/[^a-zA-Z 0-9 #]+/", "", $body);
 
         //Predict whether user is posting a url. If so, do not check for trending words
         if(strpos($no_punctuation, "height") === false && strpos($no_punctuation, "width") === false && strpos($no_punctuation, "http") === false && strpos($no_punctuation, "youtube") === false) {

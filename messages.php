@@ -42,9 +42,9 @@ if ($data !== 'new') {
     }
 }
 
-if (!$auth->isFriend($user->getUser()->id)) {
-    $data = 'new';
-}
+// if (!$auth->isFriend($user->getUser()->id)) {
+//     $data = 'new';
+// }
 
 ?>
 <?php include_once  Layouts::includes('layouts.head') ?>
@@ -111,7 +111,7 @@ if (!$auth->isFriend($user->getUser()->id)) {
                                     <!-- /.box-header -->
                                     <div class="box-body">
                                         <!-- Conversations are loaded here -->
-                                        <div id="chat-app" class="direct-chat-messages chat-app">
+                                        <div id="chat-app" class="direct-chat-messages chat-app msg-box">
                                             <?php foreach($message->retrieve($user->getUser()->id) as $message): ?>
                                                 <!-- Message. Default to the left -->
                                                 <?php if($message->sender === $user->getUser()->id): ?>
@@ -152,9 +152,9 @@ if (!$auth->isFriend($user->getUser()->id)) {
                                     </div>
                                     <!-- /.box-body -->
                                     <div class="box-footer">
-                                        <form autocomplete="off" action="<?= Router::route('handlers.message.chat') ?>" method="post">
+                                        <form autocomplete="off" action="<?= Router::route('handlers.message.chat') ?>" id="new-msg" method="post">
                                             <div class="input-group">
-                                                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                                                <input type="text" name="message" placeholder="Type Message ..." class="form-control" id="message">
                                                 <input type="hidden" name="token" value="<?= Token::getToken() ?>">
                                                 <input type="hidden" name="id" value="<?= $user->getUser()->id ?>">
                                                 <input type="hidden" name="username" value="<?= $user->getUser()->username ?>">
@@ -182,29 +182,59 @@ if (!$auth->isFriend($user->getUser()->id)) {
     <!-- /.content-wrapper -->
     <?php include_once  Layouts::includes('layouts.scripts') ?>
     <script>
-	 // chat app scrolling
-	  $('#chat-app').slimScroll({
-		height: '400px',
-        start: 'bottom',
-	  });
+        channel.bind('my-event', function(data) {
+            console.log(JSON.stringify(data));
+            alert(JSON.stringify(data));
+            const msg = data;
+            const html = `<div class="direct-chat-msg mb-30"><div class="clearfix mb-15"> <span class="direct-chat-name">User Name</span><span class="direct-chat-timestamp float-right">2 min</span></div><img class="direct-chat-img avatar" src="" alt=""> <div class="direct-chat-text">${msg.message}</div></div>`;
+            $('.msg-box').append(html);
+        });
 
-      function search(value) {
-        if (value.trim() === '') {
-            return;
-        }
-        $.post({
-            url: "<?= Router::route('handlers.ajax.search-friends')?>",
-            data: {value},
-            cache: false,
-            success(data) {
-                if (data === '') {
-                    $('.results').text('No results found');
-                } else {
-                    $('.results').html(data);
-                }
+        // chat app scrolling
+        $('#chat-app').slimScroll({
+            height: '400px',
+            start: 'bottom',
+        });
+
+        function search(value) {
+            if (value.trim() === '') {
+                return;
             }
-        })
-        // console.log(value);          
-      }
+            $.post({
+                url: "<?= Router::route('handlers.ajax.search-friends')?>",
+                data: {value},
+                cache: false,
+                success(data) {
+                    if (data === '') {
+                        $('.results').text('No results found');
+                    } else {
+                        $('.results').html(data);
+                    }
+                }
+            })
+            // console.log(value);          
+        }
+        
+        $(document).ready(function() { 
+            $("#new-msg").submit(function(e){
+                e.preventDefault();
+                $.post({
+                    url: "<?= Router::route('handlers.message.chat') ?>",
+                    // dataType: 'application/json',
+                    data: $("#new-msg").serialize(),
+                    cache: false,
+                    success(data) {
+                        console.log(data);
+                        $('#message').val('');
+                        const html = `<div class="direct-chat-msg right mb-30"><div class="clearfix mb-15"> <span class="direct-chat-name float-right">Me</span> <span class="direct-chat-timestamp">Now</span> </div><img class="direct-chat-img avatar" src="<?= $auth->getUser()->avatar ?>" alt="<?= $auth->getUser()->fname ?>"><div class="direct-chat-text">${data.message} </div> </div>`;
+                        $('.msg-box').append(html);
+                    },
+                    error(e) {
+                        console.log(e  + 'error');
+                    }
+                });
+            });
+        });
+
 	</script>
 </body>
