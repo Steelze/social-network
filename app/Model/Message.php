@@ -3,6 +3,9 @@ namespace app\Model;
 
 use app\DB;
 use app\Auth\Auth;
+use Pusher\Pusher;
+use app\Config;
+use Carbon\Carbon;
 
 
 class Message
@@ -20,20 +23,30 @@ class Message
             'recepient' => $id,
             'message' => $message,
         ]);
-        $options = array(
-            'cluster' => 'eu',
-            'useTLS' => true
-          );
 
-          $pusher = new Pusher(
-            'a6a522ec2e6eadc05461',
-            '85502e9f5cd7ecf743a5',
-            '695697',
+        $options = array(
+            'cluster' => Config::get('PUSHER_APP_CLUSTER'),
+            'useTLS' => Config::get('PUSHER_APP_USE_TLS')
+        );
+
+        $pusher = new Pusher(
+            Config::get('PUSHER_APP_KEY'),
+            Config::get('PUSHER_APP_SECRET'),
+            Config::get('PUSHER_APP_ID'),
             $options
-          );
+        );
+
+        $msg = [];
+        $user  = new User($id);
+        $msg['name'] =  $user->getFullName();
+        $msg['avatar'] =  $user->getUser()->avatar;
+        $msg['fname'] =  $user->getUser()->fname;
+        $msg['created'] =  Carbon::now()->diffForHumans();
+        $msg['message'] =  $message;
+
+        $pusher->trigger("channel-$id", 'message', json_encode($msg));
         
-          $pusher->trigger('my-channel', 'my-event', $data);
-          return $data;
+        return json_encode($msg);
     }
 
     public function getConvos()

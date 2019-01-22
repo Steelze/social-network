@@ -3,6 +3,7 @@
     use app\Token;
     use app\Router;
     use app\Auth\Auth;
+    use app\Config;
 ?>
 <script src="<?= Assets::url('js/jquery.min.js') ?>"></script>	
 <script src="<?= Assets::url('js/bootstrap.min.js') ?>"></script>
@@ -12,9 +13,9 @@
     const id = <?= Auth::user()->id ?>;
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
-    var pusher = new Pusher('a6a522ec2e6eadc05461', {
-    cluster: 'eu',
-    forceTLS: true
+    var pusher = new Pusher("<?= Config::get('PUSHER_APP_KEY') ?>", {
+      cluster: "<?= Config::get('PUSHER_APP_CLUSTER') ?>",
+      forceTLS: <?= Config::get('PUSHER_APP_USE_TLS') ?>,
     });
 
     const  channel = pusher.subscribe(`channel-${id}`);

@@ -1,8 +1,9 @@
 <?php
 require_once 'init.php';
-
+error_reporting(E_ALL);
 use app\Input;
 use app\Token;
+use Pusher\Pusher;
 use app\Config;
 use app\Router;
 use app\Layouts;
@@ -182,12 +183,12 @@ if ($data !== 'new') {
     <!-- /.content-wrapper -->
     <?php include_once  Layouts::includes('layouts.scripts') ?>
     <script>
-        channel.bind('my-event', function(data) {
-            console.log(JSON.stringify(data));
-            alert(JSON.stringify(data));
-            const msg = data;
-            const html = `<div class="direct-chat-msg mb-30"><div class="clearfix mb-15"> <span class="direct-chat-name">User Name</span><span class="direct-chat-timestamp float-right">2 min</span></div><img class="direct-chat-img avatar" src="" alt=""> <div class="direct-chat-text">${msg.message}</div></div>`;
+        channel.bind('message', function(data) {
+            const msg = JSON.parse(data);
+            const html = `<div class="direct-chat-msg mb-30"><div class="clearfix mb-15"> <span class="direct-chat-name">${msg.name}</span><span class="direct-chat-timestamp float-right">${msg.created}</span></div><img class="direct-chat-img avatar" src="${msg.avatar}" alt="${msg.fname}"> <div class="direct-chat-text">${msg.message}</div></div>`;
             $('.msg-box').append(html);
+            const bottomCoord = $('#chat-app')[0].scrollHeight;
+            $('#chat-app').slimScroll({scrollTo: bottomCoord});
         });
 
         // chat app scrolling
@@ -224,10 +225,12 @@ if ($data !== 'new') {
                     data: $("#new-msg").serialize(),
                     cache: false,
                     success(data) {
-                        console.log(data);
+                        data = JSON.parse(data);
                         $('#message').val('');
                         const html = `<div class="direct-chat-msg right mb-30"><div class="clearfix mb-15"> <span class="direct-chat-name float-right">Me</span> <span class="direct-chat-timestamp">Now</span> </div><img class="direct-chat-img avatar" src="<?= $auth->getUser()->avatar ?>" alt="<?= $auth->getUser()->fname ?>"><div class="direct-chat-text">${data.message} </div> </div>`;
                         $('.msg-box').append(html);
+                        const bottomCoord = $('#chat-app')[0].scrollHeight;
+                        $('#chat-app').slimScroll({scrollTo: bottomCoord});
                     },
                     error(e) {
                         console.log(e  + 'error');
